@@ -1,5 +1,5 @@
 estadoInicial = [[1, 5, 2], [4, 8, 3], [0, 7, 6]]
-estadoInicial = [[1, 5, 2], [0, 8, 3], [4, 7, 6]]
+estadoInicial = [[5, 8, 3], [6, 7, 1], [2, 4, 0]]
 estadoFinal = [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
 fronteira = [(estadoInicial,[])]
 visitado = set()
@@ -9,7 +9,20 @@ def acharVazio(estado):
         for j in range(3):
             if estado[i][j] == 0:
                 return i, j
-            
+
+def calculaDistancia(no):
+    estado = no[0]
+    distancia = 0
+    for i in range(3):
+        for j in range(3):
+            valor = estado[i][j]
+            if valor == 0:
+                valor = 9
+            x = (valor - 1) // 3
+            y = (valor - 1) % 3
+            distancia += abs(x-i) + abs(y-j)
+    return distancia
+
 def verificarEstado(estadoInicial, estadoFinal):
     for i in range(3):
             for j in range(3):
@@ -50,7 +63,7 @@ def resolver():
     contador = 0
     while fronteira:
         atual, caminho = fronteira.pop(0)
-        if verificarEstado(atual,estadoFinal):
+        if verificarEstado(atual, estadoFinal):
             return caminho
         visitado.add(str(atual))
         movimentos = mover(atual)
@@ -58,6 +71,7 @@ def resolver():
             if str(movimento[1]) not in visitado:
                 contador += 1
                 fronteira.append((movimento[1], caminho + [movimento[0]]))
+                fronteira.sort(key=calculaDistancia)
 
 
 resposta = resolver()
